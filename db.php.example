@@ -1,0 +1,22 @@
+<?php
+$serverName = '10.11.16.250';  // Change if needed
+$database = 'SLM';  // 🔴 Put your DB name here
+$username = 'feedback';  // or your SQL username
+$password = 'DL480eG8';  // 🔴 Put your password here
+
+try {
+    $pdo = new PDO(
+        "sqlsrv:Server=$serverName;Database=$database;TrustServerCertificate=1",
+        $username,
+        $password
+    );
+
+    // Error mode
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Default fetch mode
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die('Database Connection Failed: ' . $e->getMessage());
+}
+?>

@@ -1,12 +1,5 @@
 # Student Late Monitor (SLM)
 
-<p align="center">
-  <img src="https://img.shields.io/github/languages/top/rajkumar-tech-2002/project_late_monitor?style=for-the-badge&color=important" alt="Top Language">
-  <img src="https://img.shields.io/github/repo-size/rajkumar-tech-2002/project_late_monitor?style=for-the-badge&color=brightgreen" alt="Repo Size">
-  <img src="https://img.shields.io/github/last-commit/rajkumar-tech-2002/project_late_monitor?style=for-the-badge&color=blue" alt="Last Commit">
-  <img src="https://img.shields.io/github/stars/rajkumar-tech-2002/project_late_monitor?style=for-the-badge&color=yellow" alt="Stars">
-</p>
-
 A professional web-based application to monitor and track student late entries. This system allows for scanning student IDs, recording entry times, and generating comprehensive reports.
 
 ## 🚀 Features
@@ -19,11 +12,11 @@ A professional web-based application to monitor and track student late entries. 
 
 ## 🛠 Tech Stack
 
-- ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white) **PHP**: Server-side logic.
-- ![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=flat-square&logo=microsoft-sql-server&logoColor=white) **SQL Server**: Database for storing student and entry records.
-- ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) **JavaScript/jQuery**: Client-side interactions.
-- ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) **CSS**: Custom styling for a professional look.
-- ![IIS](https://img.shields.io/badge/IIS-0078D7?style=flat-square&logo=microsoft&logoColor=white) **Deployment**: Optimized for IIS servers.
+- **PHP**: Server-side logic.
+- **SQL Server**: Database for storing student and entry records.
+- **JavaScript/jQuery**: Client-side interactions.
+- **CSS**: Custom styling for a professional look.
+- **IIS**: Optimized for IIS servers.
 
 ## ⚙️ Installation & Setup
 

@@ -1,6 +1,9 @@
 # Sensitive files
 db.php
 
+# Confidential student data
+assets/images/students/
+
 # Environment files
 .env
 .env.*

@@ -236,9 +236,7 @@ if (isset($_SESSION['user_id'])) {
         <div id="studentInfo" class="w-100"></div>
     </main>
 
-    <footer class="footer">
-        © <?php echo date('Y'); ?> Nandha Educational Institution | <span class="text-primary fw-bold">SmartNandha</span>
-    </footer>
+    <?php include 'footer.php'; ?>
 
     <script>
         const regInput = document.getElementById('reg_no');

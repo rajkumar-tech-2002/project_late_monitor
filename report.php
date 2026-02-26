@@ -148,7 +148,8 @@ try {
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+        html, body { height: 100%; margin: 0; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; display: flex; flex-direction: column; min-height: 100vh; }
         .filter-card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; border: none; }
         .table-card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: none; overflow: hidden; }
         .table thead { background-color: #0d6efd !important; color: white !important; }
@@ -517,5 +518,6 @@ $(document).ready(function() {
     }
 });
 </script>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

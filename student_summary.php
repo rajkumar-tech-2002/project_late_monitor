@@ -117,15 +117,28 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
+        html, body { height: 100%; margin: 0; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; display: flex; flex-direction: column; min-height: 100vh; }
         .filter-card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; border: none; }
         .table-card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: none; overflow: hidden; }
         .table thead { background-color: #0d6efd !important; color: white !important; }
+        .table thead th { border: none; padding: 15px 10px; }
         .student-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #dee2e6; }
-        .page-header { background: linear-gradient(90deg, #6610f2 0%, #3f0d99 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
+        .page-header { background: linear-gradient(90deg, #0d6efd 0%, #003d99 100%); color: white; padding: 20px 0; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(13,110,253,0.1); }
         .logo-img { height: 60px; width: auto; margin-right: 15px; background: white; padding: 5px; border-radius: 8px; }
         .badge-count { font-size: 0.9rem; padding: 0.5em 0.8em; border-radius: 8px; }
-        @media print { .no-print { display: none !important; } }
+
+        /* DataTable styling overrides */
+        .dataTables_wrapper .dataTables_paginate .paginate_button { padding: 0; margin: 0; }
+        .dataTables_info { padding: 15px; font-size: 0.875rem; color: #6c757d; }
+        .dataTables_paginate { padding: 15px; }
+        .pagination { margin-bottom: 0; }
+        .dataTables_length { padding: 15px; font-size: 0.875rem; }
+
+        @media print { 
+            .no-print { display: none !important; } 
+            .table-card { box-shadow: none; }
+        }
     </style>
 </head>
 <body>
@@ -192,9 +205,9 @@ try {
 
     <!-- Data Table -->
     <div class="card table-card">
-        <div class="card-body p-3">
-            <div class="table-responsive">
-                <table id="summaryTable" class="table table-hover align-middle">
+        <div class="card-body p-0">
+            <div class="table-responsive p-3">
+                <table id="summaryTable" class="table table-hover align-middle mb-0">
                 <thead>
                     <tr>
                         <th>Photo</th>
@@ -234,6 +247,7 @@ try {
         </div>
     </div>
 </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -241,8 +255,14 @@ try {
 <script>
 $(document).ready(function() {
     $('#summaryTable').DataTable({
-        "pageLength": 25,
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "searching": true,
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50, 100],
         "order": [[6, "desc"]], // Sort by Total Late by default
+        "dom": '<"top"f>rt<"bottom"lip><"clear">',
         "language": {
             "search": "Search within results:"
         }
@@ -280,5 +300,6 @@ $(document).ready(function() {
     }
 });
 </script>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

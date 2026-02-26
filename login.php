@@ -358,6 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="hero-text">
                     <h1>Late Attendance<br>Monitoring System</h1>
                     <p>Streamlined administrative access for Staff and HODs of Nandha Engineering College.</p>
+                    <p>Developed by: <span class="fw-bold text-primary">Rajkumar Anbazhagan</span></p>
                 </div>
                 <div class="feature-pills">
                     <div class="pill">

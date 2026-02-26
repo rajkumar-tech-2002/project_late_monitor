@@ -100,6 +100,7 @@ Late_Monitor/
 ├── login.php               # 🔐 Premium Staff Login Portal (Role Selection)
 ├── logout.php              # 🚪 Secure Session Termination
 ├── report.php              # 📊 Detailed Analytics & Data Management
+├── footer.php              # 📄 Footer for all pages
 ├── student_summary.php     # 👤 Student Aggregated Performance Report
 ├── delete_handler.php      # ⚙️ Secure AJAX Handler for RBAC Deletions
 ├── db.php                  # 🔌 Centralized PDO Connection & Auth Helpers

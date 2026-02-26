@@ -123,6 +123,7 @@ try {
         .table thead { background-color: #0d6efd !important; color: white !important; }
         .student-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #dee2e6; }
         .page-header { background: linear-gradient(90deg, #6610f2 0%, #3f0d99 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
+        .logo-img { height: 60px; width: auto; margin-right: 15px; background: white; padding: 5px; border-radius: 8px; }
         .badge-count { font-size: 0.9rem; padding: 0.5em 0.8em; border-radius: 8px; }
         @media print { .no-print { display: none !important; } }
     </style>
@@ -131,9 +132,12 @@ try {
 
 <div class="page-header">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-        <div>
-            <h3 class="mb-0 fw-bold">Student Summary Report</h3>
-            <p class="mb-0 opacity-75">Nandha Educational Institution</p>
+        <div class="d-flex align-items-center">
+            <img src="assets/images/nec_logo.png" class="logo-img" alt="College Logo">
+            <div>
+                <h3 class="mb-0 fw-bold">Student Summary Report</h3>
+                <p class="mb-0 opacity-75">Nandha Educational Institution</p>
+            </div>
         </div>
         <div class="d-flex gap-2 no-print">
             <a href="report.php" class="btn btn-outline-light"><i class="bi bi-list-check"></i> Detailed Report</a>
@@ -242,6 +246,29 @@ $(document).ready(function() {
         "language": {
             "search": "Search within results:"
         }
+    });
+
+    // Dynamic Class Filtering
+    $('select[name="dept"]').on('change', function() {
+        const dept = $(this).val();
+        const classSelect = $('select[name="class"]');
+        
+        // Disable class select while loading
+        classSelect.prop('disabled', true);
+        
+        $.getJSON('get_classes.php', { dept: dept }, function(data) {
+            classSelect.empty();
+            classSelect.append('<option value="">All Classes</option>');
+            
+            data.forEach(function(className) {
+                classSelect.append($('<option>', {
+                    value: className,
+                    text: className
+                }));
+            });
+        }).always(function() {
+            classSelect.prop('disabled', false);
+        });
     });
 
     if (window.history.replaceState) {

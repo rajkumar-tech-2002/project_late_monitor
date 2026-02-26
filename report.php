@@ -155,6 +155,7 @@ try {
         .table thead th { border: none; padding: 15px 10px; }
         .student-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #dee2e6; }
         .page-header { background: linear-gradient(90deg, #0d6efd 0%, #003d99 100%); color: white; padding: 20px 0; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(13,110,253,0.1); }
+        .logo-img { height: 60px; width: auto; margin-right: 15px; background: white; padding: 5px; border-radius: 8px; }
         
         /* Deletion Styles */
         .btn-delete { color: #dc3545; transition: all 0.2s; }
@@ -179,9 +180,12 @@ try {
 
 <div class="page-header">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-        <div>
-            <h3 class="mb-0 fw-bold">Late Attendance Report</h3>
-            <p class="mb-0 opacity-75">Nandha Educational Institution</p>
+        <div class="d-flex align-items-center">
+            <img src="assets/images/nec_logo.png" class="logo-img" alt="College Logo">
+            <div>
+                <h3 class="mb-0 fw-bold">Late Attendance Report</h3>
+                <p class="mb-0 opacity-75">Nandha Educational Institution</p>
+            </div>
         </div>
         <div class="d-flex gap-2 no-print">
             <a href="student_summary.php" class="btn btn-outline-light">
@@ -400,6 +404,29 @@ $(document).ready(function() {
 
     $('.record-checkbox').on('change', function() {
         updateBulkActions();
+    });
+
+    // Dynamic Class Filtering
+    $('select[name="dept"]').on('change', function() {
+        const dept = $(this).val();
+        const classSelect = $('select[name="class"]');
+        
+        // Disable class select while loading
+        classSelect.prop('disabled', true);
+        
+        $.getJSON('get_classes.php', { dept: dept }, function(data) {
+            classSelect.empty();
+            classSelect.append('<option value="">All Classes</option>');
+            
+            data.forEach(function(className) {
+                classSelect.append($('<option>', {
+                    value: className,
+                    text: className
+                }));
+            });
+        }).always(function() {
+            classSelect.prop('disabled', false);
+        });
     });
 
     function updateBulkActions() {

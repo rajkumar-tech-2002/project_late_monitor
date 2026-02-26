@@ -1,3 +1,10 @@
+<?php
+require_once 'db.php';
+if (isset($_SESSION['user_id'])) {
+    header('Location: report.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,15 +191,25 @@
             <img src="assets/images/nec_logo.png" alt="NEC Logo">
             <h3>NANDHA ENGINEERING COLLEGE <small class="d-none d-lg-inline">(Autonomous), Erode</small></h3>
         </div>
-        <div class="d-flex gap-2">
-            <a href="student_summary.php" class="btn btn-info fw-bold px-4 py-2 rounded-pill shadow-sm text-white">
-                <i class="bi bi-person-badge"></i> Summary Report
-            </a>
-            <a href="report.php" class="btn btn-warning fw-bold px-4 py-2 rounded-pill shadow-sm">
-                <i class="bi bi-file-earmark-bar-graph"></i> Take Report
-            </a>
+        <div class="d-flex align-items-center gap-2">
+            <div class="ms-2 d-flex align-items-center gap-3">
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="report.php" class="btn btn-warning fw-bold btn-sm rounded-pill px-3 shadow-sm">
+                        <i class="bi bi-shield-lock"></i> Admin Panel
+                    </a>
+                    <div class="text-end d-none d-md-block text-white">
+                        <div class="small fw-bold lh-1"><?php echo htmlspecialchars($_SESSION['username']); ?></div>
+                    </div>
+                    <a href="logout.php" class="btn btn-outline-light btn-sm rounded-pill px-3">Logout</a>
+                <?php else: ?>
+                    <a href="login.php" class="btn btn-light btn-sm rounded-pill px-4 fw-bold text-primary shadow-sm">
+                        <i class="bi bi-person-fill"></i> Staff Login
+                    </a>
+                <?php endif; ?>
+            </div>
         </div>
     </header>
+
 
     <main class="main-content container-fluid">
         <!-- Scanner Interface -->

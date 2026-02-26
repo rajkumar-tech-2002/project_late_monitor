@@ -1,5 +1,6 @@
 <?php
 require_once 'db.php';
+checkAuth();
 $conn = $pdo;
 
 try {
@@ -8,7 +9,10 @@ try {
         return trim($value ?? '');
     }
 
-    $dept = cleanFilter($_GET['dept'] ?? '');
+    $isHOD = hasRole('hod');
+    $userDept = $_SESSION['dept'] ?? '';
+
+    $dept = ($isHOD && $userDept !== '') ? $userDept : cleanFilter($_GET['dept'] ?? '');
     $class = cleanFilter($_GET['class'] ?? '');
     $regNo = cleanFilter($_GET['reg_no'] ?? '');
     $studentName = cleanFilter($_GET['student_name'] ?? '');
@@ -86,7 +90,18 @@ try {
 
     // DROPDOWN DATA
     $depts = $conn->query('SELECT DISTINCT department FROM student_late_entry_monitor WHERE department IS NOT NULL ORDER BY department')->fetchAll(PDO::FETCH_COLUMN);
-    $classes = $conn->query('SELECT DISTINCT class FROM student_late_entry_monitor WHERE class IS NOT NULL ORDER BY class')->fetchAll(PDO::FETCH_COLUMN);
+
+    $classQuery = 'SELECT DISTINCT class FROM student_late_entry_monitor WHERE class IS NOT NULL';
+    $classParams = [];
+    if ($dept !== '') {
+        $classQuery .= ' AND department = ?';
+        $classParams[] = $dept;
+    }
+    $classQuery .= ' ORDER BY class';
+
+    $classesStmt = $conn->prepare($classQuery);
+    $classesStmt->execute($classParams);
+    $classes = $classesStmt->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {
     die('Critical Error: ' . $e->getMessage());
 }
@@ -122,8 +137,9 @@ try {
         </div>
         <div class="d-flex gap-2 no-print">
             <a href="report.php" class="btn btn-outline-light"><i class="bi bi-list-check"></i> Detailed Report</a>
-            <a href="index.php" class="btn btn-outline-light"><i class="bi bi-upc-scan"></i> Back to Scanner</a>
+            <a href="logout.php" class="btn btn-light text-danger fw-bold"><i class="bi bi-box-arrow-right"></i> Logout</a>
         </div>
+
     </div>
 </div>
 
@@ -135,12 +151,13 @@ try {
             <form method="GET" id="filterForm" class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label small fw-bold">Department</label>
-                    <select name="dept" class="form-select">
+                    <select name="dept" class="form-select" <?= $isHOD ? 'disabled' : '' ?>>
                         <option value="">All Departments</option>
                         <?php foreach ($depts as $d): ?>
                             <option value="<?= htmlspecialchars($d) ?>" <?= $dept == $d ? 'selected' : '' ?>><?= htmlspecialchars($d) ?></option>
                         <?php endforeach; ?>
                     </select>
+                    <?php if ($isHOD): ?><input type="hidden" name="dept" value="<?= htmlspecialchars($dept) ?>"><?php endif; ?>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-bold">Class</label>

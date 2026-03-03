@@ -147,9 +147,10 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        html, body { height: 100%; margin: 0; }
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; display: flex; flex-direction: column; min-height: 100vh; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
         .filter-card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; border: none; }
         .table-card { border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: none; overflow: hidden; }
         .table thead { background-color: #0d6efd !important; color: white !important; }
@@ -175,6 +176,95 @@ try {
             .no-print { display: none !important; }
             .table-card { box-shadow: none; }
         }
+
+        /* ══ Analytics Dashboard ══════════════════════════════════════ */
+        .analytics-section { margin-bottom: 32px; }
+
+        /* KPI Stat Cards */
+        .stat-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #f0f2f5;
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+        }
+        .stat-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.35rem; flex-shrink: 0;
+        }
+        .stat-value {
+            font-size: 1.75rem; font-weight: 700;
+            line-height: 1; color: #1a1d23;
+        }
+        .stat-label {
+            font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: .6px;
+            color: #8a94a6; margin-top: 5px;
+        }
+
+        /* Chart Cards */
+        .chart-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #f0f2f5;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: box-shadow .2s ease;
+        }
+        .chart-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .chart-card .card-header {
+            background: #ffffff;
+            border-bottom: 1px solid #f4f5f7;
+            padding: 14px 18px;
+            font-weight: 600;
+            font-size: .88rem;
+            color: #3d4451;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: .1px;
+        }
+        .chart-card .card-header i { font-size: 1rem; }
+        .chart-card .card-body { padding: 16px 14px; position: relative; }
+
+        /* Spinner & placeholder */
+        .chart-spinner {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,.85); z-index: 10; border-radius: 14px;
+        }
+        .chart-placeholder {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 8px;
+            height: 200px; color: #b0bac9; font-size: .85rem;
+        }
+        .chart-placeholder i { font-size: 1.6rem; opacity: .5; }
+
+        /* Dashboard header */
+        .dashboard-section-title {
+            font-size: .92rem; font-weight: 700; color: #3d4451;
+            letter-spacing: .2px;
+        }
+        .dashboard-filter-badge {
+            font-size: .74rem; background: #eef2ff;
+            color: #4361ee; padding: 3px 10px;
+            border-radius: 20px; font-weight: 600;
+        }
+        .dashboard-toggle-btn {
+            font-size: .78rem; padding: 4px 12px;
+            border-radius: 20px; border-color: #e2e6ea;
+            color: #6c757d;
+        }
+        .dashboard-toggle-btn:hover { background: #f8f9fa; }
     </style>
 </head>
 <body>
@@ -259,6 +349,124 @@ try {
             </form>
         </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ANALYTICS DASHBOARD — Added above existing table
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="analytics-section no-print" id="analyticsDashboard">
+
+        <!-- Dashboard Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i>Analytics Dashboard</h5>
+            <div class="d-flex gap-2 align-items-center">
+                <span class="text-muted" style="font-size:.82rem" id="chartFilterLabel">Showing all data</span>
+                <button class="btn btn-outline-secondary dashboard-toggle-btn" onclick="toggleDashboard()" id="dashToggleBtn">
+                    <i class="bi bi-chevron-up" id="dashToggleIcon"></i> Collapse
+                </button>
+            </div>
+        </div>
+
+        <div id="dashboardContent">
+            <!-- ── Stat Cards Row ── -->
+            <div class="row g-3 mb-4" id="statsRow">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#4361ee15,#4361ee08)">
+                        <div class="stat-icon" style="background:#4361ee20;color:#4361ee"><i class="bi bi-clock-history"></i></div>
+                        <div>
+                            <div class="stat-value text-primary" id="statTotalLate">—</div>
+                            <div class="stat-label">Total Late</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#f7258515,#f7258508)">
+                        <div class="stat-icon" style="background:#f7258520;color:#f72585"><i class="bi bi-people-fill"></i></div>
+                        <div>
+                            <div class="stat-value" style="color:#f72585" id="statStudents">—</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#4cc9f015,#4cc9f008)">
+                        <div class="stat-icon" style="background:#4cc9f020;color:#0098c7"><i class="bi bi-building"></i></div>
+                        <div>
+                            <div class="stat-value" style="color:#0098c7" id="statDepts">—</div>
+                            <div class="stat-label">Departments</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#7209b715,#7209b708)">
+                        <div class="stat-icon" style="background:#7209b720;color:#7209b7"><i class="bi bi-mortarboard-fill"></i></div>
+                        <div>
+                            <div class="stat-value" style="color:#7209b7" id="statClasses">—</div>
+                            <div class="stat-label">Classes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Charts Row 1: Pie + Doughnut + Bar ── -->
+            <div class="row g-3 mb-3">
+                <!-- Dept Pie -->
+                <div class="col-md-3">
+                    <div class="card chart-card h-100">
+                        <div class="card-header"><i class="bi bi-pie-chart-fill text-primary"></i> Dept-wise Late</div>
+                        <div class="card-body" style="min-height:280px">
+                            <div class="chart-spinner" id="spinner_dept"><div class="spinner-border text-primary" role="status"></div></div>
+                            <canvas id="chartDept"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Class Doughnut -->
+                <div class="col-md-3">
+                    <div class="card chart-card h-100">
+                        <div class="card-header"><i class="bi bi-check-circle text-warning"></i> Class-wise Late</div>
+                        <div class="card-body" style="min-height:280px">
+                            <div class="chart-spinner" id="spinner_class"><div class="spinner-border text-warning" role="status"></div></div>
+                            <canvas id="chartClass"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Top Students Bar -->
+                <div class="col-md-6">
+                    <div class="card chart-card h-100">
+                        <div class="card-header"><i class="bi bi-bar-chart-fill text-danger"></i> Top 10 Most Late Students</div>
+                        <div class="card-body" style="min-height:280px">
+                            <div class="chart-spinner" id="spinner_top"><div class="spinner-border text-danger" role="status"></div></div>
+                            <canvas id="chartTop"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Charts Row 2: Date Trend ── -->
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-lg-6">
+                    <div class="card chart-card">
+                        <div class="card-header"><i class="bi bi-graph-up text-success"></i> Daily Late Trend</div>
+                        <div class="card-body" style="min-height:220px">
+                            <div class="chart-spinner" id="spinner_date"><div class="spinner-border text-success" role="status"></div></div>
+                            <canvas id="chartDate"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- ── Charts Row 3: Monthly Trend ── -->
+                <div class="col-12 col-lg-6">
+                    <div class="card chart-card">
+                        <div class="card-header"><i class="bi bi-calendar3 text-info"></i> Monthly Late Trend</div>
+                        <div class="card-body" style="min-height:220px">
+                            <div class="chart-spinner" id="spinner_monthly"><div class="spinner-border text-info" role="status"></div></div>
+                            <canvas id="chartMonthly"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /#dashboardContent -->
+    </div><!-- /.analytics-section -->
+    <!-- ─────────────────────────────────────────────────────────── -->
 
     <!-- Bulk Actions Bar -->
     <div class="bulk-actions mb-3 animate-up no-print">
@@ -517,6 +725,270 @@ $(document).ready(function() {
         }
     }
 });
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     ANALYTICS DASHBOARD — Chart.js AJAX Script (Refined UI)
+═══════════════════════════════════════════════════════ -->
+<script>
+(function() {
+    'use strict';
+
+    // ── Professional Soft Color Palette ─────────────────────
+    const PALETTE = [
+        '#4361ee','#3a86ff','#48cae4','#06a77d','#e9c46a',
+        '#f4a261','#e76f51','#8338ec','#b5838d','#6d9dc5',
+        '#52b788','#c77dff','#f77f00','#457b9d','#e63946'
+    ];
+    // Single accent for bar + line charts
+    const ACCENT       = '#4361ee';
+    const ACCENT_LIGHT = 'rgba(67,97,238,0.12)';
+    const PINK         = '#e63d72';
+    const PINK_LIGHT   = 'rgba(230,61,114,0.12)';
+
+    // ── Chart.js Global Defaults ─────────────────────────────
+    Chart.defaults.font.family   = "'Poppins', sans-serif";
+    Chart.defaults.font.size     = 12;
+    Chart.defaults.color         = '#6c757d';
+    Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(30,35,50,0.88)';
+    Chart.defaults.plugins.tooltip.titleColor      = '#ffffff';
+    Chart.defaults.plugins.tooltip.bodyColor       = '#d1d5db';
+    Chart.defaults.plugins.tooltip.padding         = 10;
+    Chart.defaults.plugins.tooltip.cornerRadius    = 8;
+    Chart.defaults.plugins.tooltip.displayColors   = false;
+
+    // shared scale style
+    const SCALE_BASE = {
+        grid:  { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+        ticks: { color: '#8a94a6' },
+        border:{ dash: [3, 3], color: 'transparent' }
+    };
+
+    // ── Filter state ─────────────────────────────────────────
+    const urlParams = new URLSearchParams(window.location.search);
+    const filters = {
+        from_date:    urlParams.get('from_date')    || '',
+        to_date:      urlParams.get('to_date')      || '',
+        dept:         urlParams.get('dept')         || '',
+        class:        urlParams.get('class')        || '',
+        reg_no:       urlParams.get('reg_no')       || '',
+        student_name: urlParams.get('student_name') || '',
+    };
+
+    function updateFilterLabel() {
+        const parts = [];
+        if (filters.from_date) parts.push('From: ' + filters.from_date);
+        if (filters.to_date)   parts.push('To: '   + filters.to_date);
+        if (filters.dept)      parts.push('Dept: ' + filters.dept);
+        if (filters['class'])  parts.push('Class: '+ filters['class']);
+        if (filters.reg_no)    parts.push('Reg: '  + filters.reg_no);
+        const lbl = document.getElementById('chartFilterLabel');
+        if (!lbl) return;
+        if (parts.length) {
+            lbl.className = 'dashboard-filter-badge';
+            lbl.textContent = parts.join(' · ');
+        } else {
+            lbl.className = 'text-muted';
+            lbl.style.fontSize = '.78rem';
+            lbl.textContent = 'Showing all data';
+        }
+    }
+    updateFilterLabel();
+
+    window.toggleDashboard = function() {
+        const content = document.getElementById('dashboardContent');
+        const btn     = document.getElementById('dashToggleBtn');
+        if (content.style.display === 'none') {
+            content.style.display = '';
+            btn.innerHTML = '<i class="bi bi-chevron-up" id="dashToggleIcon"></i> Collapse';
+        } else {
+            content.style.display = 'none';
+            btn.innerHTML = '<i class="bi bi-chevron-down" id="dashToggleIcon"></i> Expand';
+        }
+    };
+
+    function buildUrl(type) {
+        return 'chart_data.php?' + new URLSearchParams({ type, ...filters }).toString();
+    }
+
+    const chartInstances = {};
+    function hideSpinner(id) { const s = document.getElementById('spinner_' + id); if (s) s.style.display = 'none'; }
+    function showPlaceholder(canvasId, message) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        canvas.style.display = 'none';
+        const p = document.createElement('div');
+        p.className = 'chart-placeholder';
+        p.innerHTML = '<i class="bi bi-bar-chart"></i><span>' + message + '</span>';
+        canvas.parentElement.appendChild(p);
+    }
+    function destroyChart(key) {
+        if (chartInstances[key]) { chartInstances[key].destroy(); delete chartInstances[key]; }
+    }
+    function fetchChart(type, renderFn, spinnerId) {
+        fetch(buildUrl(type))
+            .then(r => r.json())
+            .then(data => {
+                hideSpinner(spinnerId);
+                if (!data.labels || !data.labels.length) {
+                    const map = { dept_pie:'chartDept', class_doughnut:'chartClass', top_students:'chartTop', date_trend:'chartDate', monthly_trend:'chartMonthly' };
+                    showPlaceholder(map[type] || type, 'No data for current filters');
+                    return;
+                }
+                renderFn(data);
+            })
+            .catch(() => hideSpinner(spinnerId));
+    }
+
+    // ── Legend shared config ──────────────────────────────────
+    const LEGEND_BOTTOM = {
+        position: 'bottom',
+        labels: {
+            font: { size: 11, family: "'Poppins', sans-serif" },
+            padding: 14,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            color: '#6c757d'
+        }
+    };
+    const TOOLTIP_LATE = { callbacks: { label: c => ' ' + c.parsed.toLocaleString() + ' late entries' } };
+
+    // ── 1. Stats Cards ───────────────────────────────────────
+    fetch(buildUrl('stats')).then(r => r.json()).then(d => {
+        const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = (v||0).toLocaleString(); };
+        set('statTotalLate', d.total_late); set('statStudents', d.unique_students);
+        set('statDepts', d.dept_count);     set('statClasses',  d.class_count);
+    }).catch(() => {});
+
+    // ── 2. Dept Pie ──────────────────────────────────────────
+    fetchChart('dept_pie', function(raw) {
+        destroyChart('dept');
+        // Inject refined palette into dataset
+        raw.datasets[0].backgroundColor = PALETTE.slice(0, raw.labels.length);
+        raw.datasets[0].borderColor      = '#ffffff';
+        raw.datasets[0].borderWidth      = 2;
+        raw.datasets[0].hoverOffset      = 6;
+        const ctx = document.getElementById('chartDept').getContext('2d');
+        chartInstances['dept'] = new Chart(ctx, {
+            type: 'pie', data: raw,
+            options: {
+                responsive: true, maintainAspectRatio: true,
+                plugins: { legend: LEGEND_BOTTOM, tooltip: TOOLTIP_LATE }
+            }
+        });
+    }, 'dept');
+
+    // ── 3. Class Doughnut ────────────────────────────────────
+    fetchChart('class_doughnut', function(raw) {
+        destroyChart('class');
+        raw.datasets[0].backgroundColor = PALETTE.slice(0, raw.labels.length);
+        raw.datasets[0].borderColor      = '#ffffff';
+        raw.datasets[0].borderWidth      = 2;
+        raw.datasets[0].hoverOffset      = 6;
+        const ctx = document.getElementById('chartClass').getContext('2d');
+        chartInstances['class'] = new Chart(ctx, {
+            type: 'doughnut', data: raw,
+            options: {
+                responsive: true, maintainAspectRatio: true, cutout: '65%',
+                plugins: { legend: LEGEND_BOTTOM, tooltip: TOOLTIP_LATE }
+            }
+        });
+    }, 'class');
+
+    // ── 4. Top 10 Students Bar (single accent color) ─────────
+    fetchChart('top_students', function(raw) {
+        destroyChart('top');
+        // Override to uniform accent with slight alpha variation per rank
+        const n = raw.labels.length;
+        raw.datasets[0].backgroundColor = raw.labels.map((_, i) =>
+            `rgba(67,97,238,${0.95 - i * (0.5 / Math.max(n, 1))})`);
+        raw.datasets[0].borderColor   = 'transparent';
+        raw.datasets[0].borderRadius  = 6;
+        raw.datasets[0].borderSkipped = false;
+        const ctx = document.getElementById('chartTop').getContext('2d');
+        chartInstances['top'] = new Chart(ctx, {
+            type: 'bar', data: raw,
+            options: {
+                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false },
+                    tooltip: { callbacks: { label: c => ' ' + c.parsed.x.toLocaleString() + ' times late' } } },
+                scales: {
+                    x: { ...SCALE_BASE, beginAtZero: true, ticks: { precision: 0, color:'#8a94a6' },
+                        title: { display: true, text: 'Late Count', color: '#8a94a6', font: { size: 11 } } },
+                    y: { ...SCALE_BASE, grid: { display: false },
+                        ticks: { color: '#3d4451', font: { size: 11 }, mirror: false } }
+                }
+            }
+        });
+    }, 'top');
+
+    // ── 5. Date Trend Line (soft blue gradient) ──────────────
+    fetchChart('date_trend', function(raw) {
+        destroyChart('date');
+        const ctx = document.getElementById('chartDate').getContext('2d');
+        // Create vertical gradient fill
+        const grad = ctx.createLinearGradient(0, 0, 0, 280);
+        grad.addColorStop(0,   'rgba(67,97,238,0.20)');
+        grad.addColorStop(0.6, 'rgba(67,97,238,0.05)');
+        grad.addColorStop(1,   'rgba(67,97,238,0.00)');
+        raw.datasets[0].borderColor          = ACCENT;
+        raw.datasets[0].backgroundColor      = grad;
+        raw.datasets[0].fill                 = true;
+        raw.datasets[0].tension              = 0.4;
+        raw.datasets[0].pointRadius          = raw.labels.length > 60 ? 0 : 3;
+        raw.datasets[0].pointHoverRadius     = 5;
+        raw.datasets[0].pointBackgroundColor = ACCENT;
+        raw.datasets[0].borderWidth          = 2;
+        chartInstances['date'] = new Chart(ctx, {
+            type: 'line', data: raw,
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false },
+                    tooltip: { callbacks: { label: c => ' ' + c.parsed.y.toLocaleString() + ' late entries' } } },
+                scales: {
+                    x: { ...SCALE_BASE, ticks: { maxRotation: 45, color:'#8a94a6', font:{ size:10 },
+                        maxTicksLimit: 20 } },
+                    y: { ...SCALE_BASE, beginAtZero: true, ticks: { precision:0, color:'#8a94a6' },
+                        title: { display: true, text: 'Late Count', color:'#8a94a6', font:{size:11} } }
+                }
+            }
+        });
+    }, 'date');
+
+    // ── 6. Monthly Trend Line (soft pink gradient) ───────────
+    fetchChart('monthly_trend', function(raw) {
+        destroyChart('monthly');
+        const ctx = document.getElementById('chartMonthly').getContext('2d');
+        const grad = ctx.createLinearGradient(0, 0, 0, 260);
+        grad.addColorStop(0,   'rgba(230,61,114,0.20)');
+        grad.addColorStop(0.6, 'rgba(230,61,114,0.05)');
+        grad.addColorStop(1,   'rgba(230,61,114,0.00)');
+        raw.datasets[0].borderColor          = PINK;
+        raw.datasets[0].backgroundColor      = grad;
+        raw.datasets[0].fill                 = true;
+        raw.datasets[0].tension              = 0.4;
+        raw.datasets[0].pointRadius          = 4;
+        raw.datasets[0].pointHoverRadius     = 6;
+        raw.datasets[0].pointBackgroundColor = PINK;
+        raw.datasets[0].borderWidth          = 2;
+        chartInstances['monthly'] = new Chart(ctx, {
+            type: 'line', data: raw,
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: false },
+                    tooltip: { callbacks: { label: c => ' ' + c.parsed.y.toLocaleString() + ' late entries' } } },
+                scales: {
+                    x: { ...SCALE_BASE, ticks: { color:'#8a94a6', font:{ size:11 } } },
+                    y: { ...SCALE_BASE, beginAtZero: true, ticks: { precision:0, color:'#8a94a6' },
+                        title: { display: true, text: 'Late Count', color:'#8a94a6', font:{size:11} } }
+                }
+            }
+        });
+    }, 'monthly');
+
+})();
 </script>
     <?php include 'footer.php'; ?>
 </body>

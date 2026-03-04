@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Portal | Nandha Engineering College</title>
+    <title>Staff Portal | Nandha College of Technology</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -236,6 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: var(--text-muted);
             font-size: 1.1rem;
             transition: color 0.3s;
+            pointer-events: none;
         }
 
         .form-control, .form-select {
@@ -255,7 +256,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.1);
         }
 
-        .form-control:focus + i, .form-select:focus + i {
+        /* Password field – flexbox wrapper acts as the input box */
+        .password-wrapper {
+            display: flex;
+            align-items: center;
+            height: 60px;
+            border-radius: 16px;
+            border: 2px solid #f1f5f9;
+            background: #f8fafc;
+            padding: 0 1rem 0 1.25rem;
+            gap: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .password-wrapper:focus-within {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.1);
+        }
+
+        .password-wrapper .pw-lock-icon {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .password-wrapper #passwordInput {
+            flex: 1;
+            height: 100%;
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none;
+            padding: 0;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 1rem;
+            border-radius: 0;
+        }
+
+        .toggle-password {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password:hover {
             color: var(--primary);
         }
 
@@ -353,11 +407,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <div class="visual-inner">
                 <div class="logo-box">
-                    <img src="assets/images/nec_logo.png" alt="NEC Logo">
+                    <img src="assets/images/nct.png" alt="NCT Logo">
                 </div>
                 <div class="hero-text">
                     <h1>Late Attendance<br>Monitoring System</h1>
-                    <p>Streamlined administrative access for Staff and HODs of Nandha Engineering College.</p>
+                    <p>Streamlined administrative access for Staff and HODs of Nandha College of Technology.</p>
                     <p>Developed by: <span class="fw-bold text-primary">Rajkumar Anbazhagan</span></p>
                 </div>
                 <div class="feature-pills">
@@ -409,9 +463,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-group">
                         <label>Password</label>
-                        <div class="input-wrapper">
-                            <i class="bi bi-lock"></i>
-                            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                        <div class="password-wrapper">
+                            <i class="bi bi-lock pw-lock-icon"></i>
+                            <input type="password" id="passwordInput" name="password" placeholder="••••••••" required>
+                            <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
+                                <i class="bi bi-eye" id="toggleIcon"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -426,5 +483,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        var input = document.getElementById('passwordInput');
+        var icon  = document.getElementById('toggleIcon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    });
+</script>
 </body>
 </html>

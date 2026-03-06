@@ -42,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Portal | Nandha College of Technology</title>
+    <link rel="icon" type="image/png" href="assets/images/nec_logo.png">
+    <title>Staff Portal | Nandha Engineering College</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -407,11 +408,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <div class="visual-inner">
                 <div class="logo-box">
-                    <img src="assets/images/nct.png" alt="NCT Logo">
+                    <img src="assets/images/nec_logo.png" alt="NEC Logo">
                 </div>
                 <div class="hero-text">
                     <h1>Late Attendance<br>Monitoring System</h1>
-                    <p>Streamlined administrative access for Staff and HODs of Nandha College of Technology.</p>
+                    <p>Streamlined administrative access for Staff and HODs of Nandha Engineering College.</p>
                     <p>Developed by: <span class="fw-bold text-primary">Rajkumar Anbazhagan</span></p>
                 </div>
                 <div class="feature-pills">

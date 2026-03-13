@@ -509,7 +509,7 @@ try {
                                 $photoFilePng = 'assets/images/students/' . $row['reg_no'] . '.png';
                                 $photoPath = file_exists(__DIR__ . '/' . $photoFileJpg)
                                     ? $photoFileJpg
-                                    : (file_exists(__DIR__ . '/' . $photoFilePng) ? $photoFilePng : 'assets/images/students/default.png');
+                                    : (file_exists(__DIR__ . '/' . $photoFilePng) ? $photoFilePng : 'assets/images/students/profile.png');
                                 ?>
                                 <tr>
                                     <td class="ps-4 no-print">

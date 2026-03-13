@@ -274,7 +274,7 @@ if (isset($_SESSION['user_id'])) {
                                 <div class="row g-4 align-items-center">
                                     <div class="col-lg-3 text-center">
                                         <img src="${photoPath}" class="student-photo" 
-                                             onerror="this.src='assets/images/students/default.png'">
+                                             onerror="this.src='assets/images/students/profile.png'">
                                     </div>
                                     <div class="col-lg-9">
                                         <div class="border-bottom pb-2 mb-4">
